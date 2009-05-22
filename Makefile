@@ -4,7 +4,11 @@
 ################################################
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
 
-OBJS =		src/test.o src/datastructures/CRS.o src/exceptions/DimensionException.o
+OBJS =		src/testCRS.o \
+	src/datastructures/CRS.o \
+	src/datastructures/VectorFunc.o \
+	src/exceptions/DimensionException.o \
+	src/algorithms/JacobiMethod.o
 
 LIBS =
 
