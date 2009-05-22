@@ -23,11 +23,10 @@ vector<double> JacobiMethod::solveSystem(double epsilon) {
 	}
 
 	CRS D_inv = CRS(diag);
-	CRS L, U; //TODO L,U erzeugen!
+	CRS L, U; //TODO L, U erzeugen!
 	vector<double> b = getB();
 	//TODO abbruchbedingung?
 	vector<double> x_m = D_inv * (b - ((L + U) * x_m));
-
 
 	return x_m;
 }

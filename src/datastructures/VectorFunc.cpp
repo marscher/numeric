@@ -46,6 +46,33 @@ T operator*(const std::vector<T>& x, const std::vector<T>& y) {
 	}
 	return sum;
 }
+template<class T>
+std::vector<T>& operator*=(std::vector<T>& x, const std::vector<T>& y) {
+	size_t n = x.size();
+	for (size_t i = 0; i < n; i++) {
+		x[i] *= y[i];
+	}
+	return x;
+}
+
+template<class T>
+T operator/(const std::vector<T>& x, const std::vector<T>& y) {
+	size_t n = y.size();
+	T sum = 0;
+	for (size_t i = 0; i < n; i++) {
+		sum += x[i] / y[i];
+	}
+	return sum;
+}
+
+template<class T>
+std::vector<T>& operator/=(std::vector<T>& x, const std::vector<T>& y) {
+	size_t n = x.size();
+	for (size_t i = 0; i < n; i++) {
+		x[i] /= y[i];
+	}
+	return x;
+}
 
 template<class T>
 T norm2(const std::vector<T>& x, long double p = 2) {
