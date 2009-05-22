@@ -21,6 +21,7 @@ public:
 	CRS(double* val, int* col, int* rowPtr);
 	CRS(vector<double>& val, vector<int>& col, vector<int>& rowPtr);
 	CRS(const CRS&);
+	CRS(vector<double>& diag);
 
 	// constants defining standard operator matrices
 	static const int THREE_STAR_OPERATOR = 0x0;
@@ -28,13 +29,13 @@ public:
 
 	double getElement(int i, int j);
 
-	// Matrix + Matrix
+	// Matrix Operations
 	CRS operator+(const CRS&);
+	CRS operator-(const CRS&);
 
-	// Matrix * Vector (Very slow...)
+	// Matrix Vector Operations
 	vector<double> operator*(const vector<double>&);
 	void vektorMult(const vector<double>& arg, vector<double>& result);
-
 
 	vector<double> getTrace();
 	void getTrace(vector<double>&);
@@ -56,10 +57,10 @@ private:
 
 	// stores dimension of this matrix
 	unsigned int dimension;
-	
+
 	// stores how much entries differing from 0 this matrix has
 	long numberOfEntries;
-	
+
 	// stores stepSize of grid
 	unsigned int stepSize;
 

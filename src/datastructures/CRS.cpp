@@ -35,8 +35,8 @@ vector<double> CRS::getTrace() {
 }
 
 /**
-* stores trace of this matrix in given vector t
-*/
+ * stores trace of this matrix in given vector t
+ */
 void CRS::getTrace(vector<double>& t) {
 	t = vector<double> (getDimension());
 
@@ -44,11 +44,39 @@ void CRS::getTrace(vector<double>& t) {
 		t[i] = getVal()[getRowPtr()[i]];
 	}
 }
+/**
+ * TODO impl me
+ */
+CRS CRS::operator+(const CRS& A) {
+	if (A.getDimension() != getDimension())
+		throw DimensionException("Dimensions of Argument does not match.");
+	unsigned int N = getDimension();
 
-CRS CRS::operator+(const CRS& copyCRS) {
-	// TODO impl me
-	CRS c = CRS();
-	return c;
+	for (unsigned int i = 0; i < N; i++) {
+		// for all entries (!=0) in this row
+		for (int j = 0; j < N; j++) {
+
+		}
+	}
+	CRS result = CRS();
+	return result;
+}
+
+/**
+ * TODO impl me
+ */
+CRS CRS::operator-(const CRS& A) {
+	if (A.getDimension() != getDimension())
+		throw DimensionException("Dimensions of Argument does not match.");
+	unsigned int N = getDimension();
+	for (unsigned int i = 0; i < N; i++) {
+		// for all entries (!=0) in this row
+		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
+
+		}
+	}
+	CRS result = CRS();
+	return result;
 }
 
 /**
@@ -64,9 +92,9 @@ vector<double> CRS::operator *(const vector<double>& v) {
 	vector<double> result(N, 0.0);
 	for (unsigned int i = 0; i < N; i++) {
 		// for all entries (!=0) in this row
-		for (int j = 0; j < rowPtr[i + 1] - rowPtr[i]; j++) {
+		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
 			// omits multiplication where Matrix[i, j] = 0.
-			double c = val[rowPtr[i] + j] * v[col[rowPtr[i] + j]];
+			double c = val[j] * v[col[j]];
 			result[i] += c;
 		}
 	}
@@ -76,7 +104,7 @@ vector<double> CRS::operator *(const vector<double>& v) {
 /**
  * multiplies the matrix with v, storing the result in the result reference.
  * actually slower than the overloaded * operator, which seems unlogical, because
- * vector result has to be copied. (perhaps some compiler optimisations...) 
+ * vector result has to be copied. (perhaps some compiler optimisations...)
  */
 void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
 	unsigned int N = getDimension();
@@ -85,12 +113,12 @@ void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
 	}
 
 	// inits elements with 0.
-	result = vector<double>(N, 0.0);
+	result = vector<double> (N, 0.0);
 	for (unsigned int i = 0; i < N; i++) {
 		// for all entries (!=0) in this row
-		for (int j = 0; j < rowPtr[i + 1] - rowPtr[i]; j++) {
+		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
 			// omits multiplication where Matrix[i, j] = 0.
-			double c = val[rowPtr[i] + j] * v[col[rowPtr[i] + j]];
+			double c = val[j] * v[col[j]];
 			result[i] += c;
 		}
 	}
@@ -101,9 +129,10 @@ CRS::CRS() {
 	setNumbersOfEntries(0);
 }
 
-CRS::CRS(const int operatorType, const unsigned int dimension, const unsigned int stepSize) {
+CRS::CRS(const int operatorType, const unsigned int dimension,
+		const unsigned int stepSize) {
 	setDimension(dimension);
-	setStepSize(stepSize);	
+	setStepSize(stepSize);
 	switch (operatorType) {
 	case CRS::THREE_STAR_OPERATOR: {
 		if (getDimension() < 2)
@@ -152,9 +181,8 @@ void CRS::generateRowPtr(const int operatorType) {
 void CRS::generateVal(const int operatorType) {
 	int m = getNumberOfEntries();
 	vector<double> val(m);
-	// TODO check if h is correct.
-	double h = 1.0 / getStepSize();
-	cout << "h: " << h << endl;	
+	double h = getStepSize() * getStepSize();
+
 	if (operatorType == CRS::THREE_STAR_OPERATOR) {
 		val[0] = 2 / h;
 		val[1] = -1 / h;
@@ -216,6 +244,23 @@ CRS::CRS(const CRS& crs) {
 	setVal(crs.getVal());
 }
 
+/**
+ * creates CRS diagonal matrix out of vector diag
+ */
+CRS::CRS(vector<double>& diag) {
+	setVal(val);
+	vector<int> col = vector<int> (diag.size());
+	vector<int> rowPtr = vector<int> (diag.size() + 1);
+
+	for (unsigned int i = 0; i < col.size(); i++) {
+		col[i] = i;
+		rowPtr[i] = i;
+	}
+
+	setCol(col);
+	setRowPtr(rowPtr);
+}
+
 // getter + setter
 const long CRS::getNumberOfEntries() const {
 	return numberOfEntries;
@@ -263,5 +308,4 @@ const unsigned int CRS::getStepSize() const {
 
 void CRS::setStepSize(const unsigned int stepSize) {
 	this->stepSize = stepSize;
-	cout << "set stepsize: "<< this->stepSize << endl;
 }
