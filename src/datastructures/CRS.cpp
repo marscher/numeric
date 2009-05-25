@@ -248,7 +248,7 @@ CRS::CRS(const CRS& crs) {
  * creates CRS diagonal matrix out of vector diag
  */
 CRS::CRS(vector<double>& diag) {
-	setVal(val);
+	setVal(diag);
 	vector<int> col = vector<int> (diag.size());
 	vector<int> rowPtr = vector<int> (diag.size() + 1);
 
@@ -259,6 +259,46 @@ CRS::CRS(vector<double>& diag) {
 
 	setCol(col);
 	setRowPtr(rowPtr);
+}
+
+/**
+ * TODO describe me
+ */
+CRS CRS::getUpperTriangular() {
+	unsigned int N = getDimension();
+	vector<double> val;
+	vector<int> col;
+	vector<int> rowPtr;
+
+	for (int i = 0; i < N / 2; ++i) {
+		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
+			val.push_back(getVal()[j]);
+			//	col.push_back(getCol()]j]);
+			rowPtr.push_back(getRowPtr()[j]);
+		}
+	}
+	CRS result = CRS(val, col, rowPtr);
+	return result;
+}
+
+/**
+ * TODO describe me
+ */
+CRS CRS::getLowerTriangular() {
+
+}
+
+/**
+ * do not use this animal!
+ */
+string CRS::toString() {
+	string result = "";
+	for (int i = 0; i < getDimension(); ++i) {
+		for (int j = 0; j < getDimension(); ++j) {
+			result += getElement(i,j);
+		}
+	}
+	return result;
 }
 
 // getter + setter

@@ -14,25 +14,20 @@ class JacobiMethod {
 public:
 	JacobiMethod(const CRS& A, const vector<double>& b);
 
-	CRS getA() const {
-		return A;
-	}
-
-	vector<double> getB() const {
-		return b;
-	}
+	// Getter
+	CRS& getA();
+	vector<double>& getB();
 
 	vector<double> solveSystem(double epsilon);
 
 private:
+	// Matrix A, storing
 	CRS A;
 	vector<double> b;
-	void setA(CRS A) {
-		this->A = A;
-	}
-	void setB(vector<double> b) {
-		this->b = b;
-	}
+
+	// Setter
+	void setA(const CRS&);
+	void setB(const vector<double>&);
 };
 
 #endif /* JACOBIMETHOD_H_ */

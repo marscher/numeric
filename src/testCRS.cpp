@@ -23,9 +23,13 @@ int main(char** argv, int argc) {
 		// inits the matrix stored by Compressed Row Storage (CRS)
 		// with a three star operator and the given dimension.
 		CRS crs = CRS(CRS::THREE_STAR_OPERATOR, dimension, stepSize);
-		// inits the unit vector (1, ..., 1) 
+		// inits the unit vector (1, ..., 1)
 		vector<double> v(dimension, 1);
 		//vector<double> t = crs.getTrace();
+
+
+		cout << crs.getUpperTriangular().toString() << endl;
+		pressEnter();
 
 		// multiplies the matrix with the vector
 		vector<double> r = crs * v;

@@ -49,6 +49,11 @@ public:
 	const vector<int>& getRowPtr() const;
 	const vector<double>& getVal() const;
 
+	CRS getUpperTriangular();
+	CRS getLowerTriangular();
+
+	string toString();
+
 private:
 	// containers
 	vector<double> val;

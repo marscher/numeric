@@ -12,7 +12,7 @@ OBJS =		src/testCRS.o \
 
 LIBS =
 
-TARGET =	test
+TARGET =	testCRS
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
