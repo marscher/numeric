@@ -10,6 +10,7 @@ using namespace std;
 #include "../exceptions/DimensionException.h"
 
 /**
+ * use this only for debug purposes!
  * i := row index
  * j := column index
  */
@@ -24,6 +25,9 @@ double CRS::getElement(int i, int j) {
 	return m;
 }
 
+/**
+ * gets the trace of this matrix
+ */
 vector<double> CRS::getTrace() {
 	vector<double> t = vector<double> (getDimension());
 
@@ -58,7 +62,8 @@ CRS CRS::operator+(const CRS& A) {
 
 		}
 	}
-	CRS result = CRS();
+
+	CRS result;
 	return result;
 }
 
@@ -75,7 +80,7 @@ CRS CRS::operator-(const CRS& A) {
 
 		}
 	}
-	CRS result = CRS();
+	CRS result;
 	return result;
 }
 
@@ -88,7 +93,7 @@ vector<double> CRS::operator *(const vector<double>& v) {
 		throw DimensionException("Dimensions do not match each other.");
 	}
 
-	// inits elements with 0.
+	// inits N elements with 0.
 	vector<double> result(N, 0.0);
 	for (unsigned int i = 0; i < N; i++) {
 		// for all entries (!=0) in this row
@@ -123,11 +128,11 @@ void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
 		}
 	}
 }
-
-CRS::CRS() {
-	setDimension(0);
-	setNumbersOfEntries(0);
-}
+/*
+ CRS::CRS() {
+ setDimension(0);
+ setNumberOfEntries(0);
+ } */
 
 CRS::CRS(const int operatorType, const unsigned int dimension,
 		const unsigned int stepSize) {
@@ -139,7 +144,7 @@ CRS::CRS(const int operatorType, const unsigned int dimension,
 			throw DimensionException(
 					"dimension of three star operator have to be greater than 2.");
 
-		setNumbersOfEntries((((dimension - 2) * 3) + 4));
+		setNumberOfEntries((((dimension - 2) * 3) + 4));
 		generateCol(operatorType);
 		generateRowPtr(operatorType);
 		generateVal(operatorType);
@@ -219,20 +224,31 @@ void CRS::generateCol(const int operatorType) {
 	setCol(col);
 }
 
-CRS::CRS(double* val, int* col, int* rowPtr) {
+CRS::CRS(double* val, int* col, int* rowPtr, unsigned int dimension,
+		unsigned int stepSize) {
 	/* // the iterator constructor can also be used to construct from arrays:
 	 int myints[] = {16,2,77,29};
 	 vector<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
 	 */
+	setStepSize(stepSize);
+	setDimension(dimension);
 	setVal(vector<double> (val, val + sizeof(val) / sizeof(double)));
 	setCol(vector<int> (col, col + sizeof(col) / sizeof(int)));
 	setRowPtr(vector<int> (rowPtr, rowPtr + sizeof(rowPtr) / sizeof(int)));
 }
 
-CRS::CRS(vector<double>& val, vector<int>& col, vector<int>& rowPtr) {
+/**
+ * default constructor
+ */
+CRS::CRS(const vector<double>& val, const vector<int>& col,
+		const vector<int>& rowPtr, unsigned int dimension,
+		unsigned int stepSize) {
 	setVal(val);
 	setCol(col);
 	setRowPtr(rowPtr);
+
+	setStepSize(stepSize);
+	setDimension(dimension);
 }
 
 /**
@@ -242,27 +258,35 @@ CRS::CRS(const CRS& crs) {
 	setCol(crs.getCol());
 	setRowPtr(crs.getRowPtr());
 	setVal(crs.getVal());
+
+	setDimension(crs.getDimension());
+	setStepSize(crs.getStepSize());
 }
 
 /**
  * creates CRS diagonal matrix out of vector diag
  */
-CRS::CRS(vector<double>& diag) {
+CRS::CRS(vector<double>& diag, unsigned int dimension) {
 	setVal(diag);
+	setDimension(dimension);
+
 	vector<int> col = vector<int> (diag.size());
 	vector<int> rowPtr = vector<int> (diag.size() + 1);
 
-	for (unsigned int i = 0; i < col.size(); i++) {
+	unsigned int i;
+	for (i = 0; i < col.size(); i++) {
 		col[i] = i;
 		rowPtr[i] = i;
 	}
+	// TODO test
+	rowPtr[i++] = i;
 
 	setCol(col);
 	setRowPtr(rowPtr);
 }
 
 /**
- * TODO describe me
+ * TODO describe me, fix this method!
  */
 CRS CRS::getUpperTriangular() {
 	unsigned int N = getDimension();
@@ -270,10 +294,10 @@ CRS CRS::getUpperTriangular() {
 	vector<int> col;
 	vector<int> rowPtr;
 
-	for (int i = 0; i < N / 2; ++i) {
-		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
+	for (unsigned int i = 0; i < N; ++i) {
+		for (int j = getRowPtr()[i]; j < getRowPtr()[i + 1]; j++) {
 			val.push_back(getVal()[j]);
-			//	col.push_back(getCol()]j]);
+			col.push_back(getCol()[j]);
 			rowPtr.push_back(getRowPtr()[j]);
 		}
 	}
@@ -285,7 +309,8 @@ CRS CRS::getUpperTriangular() {
  * TODO describe me
  */
 CRS CRS::getLowerTriangular() {
-
+	CRS result;
+	return result;
 }
 
 /**
@@ -293,9 +318,9 @@ CRS CRS::getLowerTriangular() {
  */
 string CRS::toString() {
 	string result = "";
-	for (int i = 0; i < getDimension(); ++i) {
-		for (int j = 0; j < getDimension(); ++j) {
-			result += getElement(i,j);
+	for (int i = 0; i < getDimension(); i++) {
+		for (int j = 0; j < getDimension(); j++) {
+			result += getElement(i, j);
 		}
 	}
 	return result;
@@ -306,7 +331,7 @@ const long CRS::getNumberOfEntries() const {
 	return numberOfEntries;
 }
 
-void CRS::setNumbersOfEntries(const long numberOfEntries) {
+void CRS::setNumberOfEntries(const long numberOfEntries) {
 	this->numberOfEntries = numberOfEntries;
 }
 
@@ -322,8 +347,12 @@ const vector<double>& CRS::getVal() const {
 	return val;
 }
 
+/**
+ * sets the value storage and the internal count of entries
+ */
 void CRS::setVal(const vector<double>& val) {
 	this->val = val;
+	setNumberOfEntries(val.size());
 }
 
 const vector<int>& CRS::getCol() const {

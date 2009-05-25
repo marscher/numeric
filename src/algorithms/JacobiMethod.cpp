@@ -23,7 +23,7 @@ vector<double> JacobiMethod::solveSystem(double epsilon) {
 		diag[i] = 1 / diag[i];
 	}
 
-	CRS D_inv = CRS(diag);
+	CRS D_inv = CRS(diag, A.getDimension());
 	CRS L = A.getLowerTriangular(), U = A.getUpperTriangular(); //TODO L, U erzeugen!
 	vector<double> b = getB();
 	//TODO abbruchbedingung?

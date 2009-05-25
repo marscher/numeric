@@ -15,13 +15,22 @@ using std::vector;
 
 class CRS {
 public:
-	// constructors
-	CRS();
-	CRS(const int operatorType, const unsigned int dimension, const unsigned int stepSize);
-	CRS(double* val, int* col, int* rowPtr);
-	CRS(vector<double>& val, vector<int>& col, vector<int>& rowPtr);
+	// default constructor
+	CRS(const vector<double>& val = vector<double> (), const vector<int>& col =
+			vector<int> (), const vector<int>& rowPtr = vector<int> (),
+			unsigned int dimension = 0, unsigned int stepSize = 0);
+
+	// copy constructor
 	CRS(const CRS&);
-	CRS(vector<double>& diag);
+
+	// special constructors
+	CRS(vector<double>& diag, unsigned int dimension);
+
+	CRS(const int operatorType, const unsigned int dimension,
+			const unsigned int stepSize);
+
+	CRS(double* val, int* col, int* rowPtr, unsigned int dimension,
+			unsigned int stepSize);
 
 	// constants defining standard operator matrices
 	static const int THREE_STAR_OPERATOR = 0x0;
@@ -71,7 +80,7 @@ private:
 
 	// Setter
 	void setDimension(const unsigned int);
-	void setNumbersOfEntries(const long);
+	void setNumberOfEntries(const long);
 	void setStepSize(const unsigned int);
 	void setCol(const vector<int>&);
 	void setRowPtr(const vector<int>&);
