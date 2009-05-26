@@ -128,12 +128,10 @@ void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
 		}
 	}
 }
-/*
- CRS::CRS() {
- setDimension(0);
- setNumberOfEntries(0);
- } */
 
+/**
+ *  TODO Describe me
+ */
 CRS::CRS(const int operatorType, const unsigned int dimension,
 		const unsigned int stepSize) {
 	setDimension(dimension);
@@ -331,7 +329,7 @@ const long CRS::getNumberOfEntries() const {
 	return numberOfEntries;
 }
 
-void CRS::setNumberOfEntries(const long numberOfEntries) {
+inline void CRS::setNumberOfEntries(const long numberOfEntries) {
 	this->numberOfEntries = numberOfEntries;
 }
 
@@ -339,7 +337,7 @@ const unsigned int CRS::getDimension() const {
 	return dimension;
 }
 
-void CRS::setDimension(const unsigned int dimension) {
+inline void CRS::setDimension(const unsigned int dimension) {
 	this->dimension = dimension;
 }
 
@@ -350,7 +348,7 @@ const vector<double>& CRS::getVal() const {
 /**
  * sets the value storage and the internal count of entries
  */
-void CRS::setVal(const vector<double>& val) {
+inline void CRS::setVal(const vector<double>& val) {
 	this->val = val;
 	setNumberOfEntries(val.size());
 }
@@ -359,7 +357,7 @@ const vector<int>& CRS::getCol() const {
 	return col;
 }
 
-void CRS::setCol(const vector<int>& col) {
+inline void CRS::setCol(const vector<int>& col) {
 	this->col = col;
 }
 
@@ -367,7 +365,7 @@ const vector<int>& CRS::getRowPtr() const {
 	return rowPtr;
 }
 
-void CRS::setRowPtr(const vector<int>& rowPtr) {
+inline void CRS::setRowPtr(const vector<int>& rowPtr) {
 	this->rowPtr = rowPtr;
 }
 
@@ -375,6 +373,6 @@ const unsigned int CRS::getStepSize() const {
 	return stepSize;
 }
 
-void CRS::setStepSize(const unsigned int stepSize) {
+inline void CRS::setStepSize(const unsigned int stepSize) {
 	this->stepSize = stepSize;
 }
