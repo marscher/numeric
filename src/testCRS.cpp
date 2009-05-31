@@ -15,7 +15,7 @@ void pressEnter() {
 	cin.ignore(1, 0);
 }
 
-int main(char** argv, int argc) {
+int main(int argc, char** argv) {
 	// set this to dimension of the three star operator and the unit vector
 	const unsigned int dimension = 10000000;
 	const unsigned int stepSize = 1;
