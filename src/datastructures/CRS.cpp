@@ -4,7 +4,6 @@
 // Version     :
 //============================================================================
 #include <iostream>
-#include <exception>
 using namespace std;
 #include "CRS.h"
 #include "../exceptions/DimensionException.h"
@@ -29,7 +28,7 @@ double CRS::getElement(int i, int j) {
  * gets the trace of this matrix
  */
 vector<double> CRS::getTrace() {
-	vector<double> t = vector<double> (getDimension());
+	vector<double> t(getDimension());
 
 	for (unsigned int i = 0; i < getDimension(); i++) {
 		t[i] = getVal()[getRowPtr()[i]];
@@ -58,7 +57,7 @@ CRS CRS::operator+(const CRS& A) {
 
 	for (unsigned int i = 0; i < N; i++) {
 		// for all entries (!=0) in this row
-		for (int j = 0; j < N; j++) {
+		for (unsigned int j = 0; j < N; j++) {
 
 		}
 	}
@@ -253,6 +252,7 @@ CRS::CRS(const vector<double>& val, const vector<int>& col,
  * copy constructor
  */
 CRS::CRS(const CRS& crs) {
+	cout << "called copy CRS()\n";
 	setCol(crs.getCol());
 	setRowPtr(crs.getRowPtr());
 	setVal(crs.getVal());
@@ -268,8 +268,8 @@ CRS::CRS(vector<double>& diag, unsigned int dimension) {
 	setVal(diag);
 	setDimension(dimension);
 
-	vector<int> col = vector<int> (diag.size());
-	vector<int> rowPtr = vector<int> (diag.size() + 1);
+	vector<int> col (diag.size());
+	vector<int> rowPtr (diag.size() + 1);
 
 	unsigned int i;
 	for (i = 0; i < col.size(); i++) {
@@ -299,7 +299,7 @@ CRS CRS::getUpperTriangular() {
 			rowPtr.push_back(getRowPtr()[j]);
 		}
 	}
-	CRS result = CRS(val, col, rowPtr);
+	CRS result(val, col, rowPtr);
 	return result;
 }
 

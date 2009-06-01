@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
+#include <iostream>
+#include <iterator>
 
 template<class T>
 std::vector<T>& operator+=(std::vector<T>& x, const std::vector<T>& y) {
@@ -46,6 +48,7 @@ T operator*(const std::vector<T>& x, const std::vector<T>& y) {
 	}
 	return sum;
 }
+
 template<class T>
 std::vector<T>& operator*=(std::vector<T>& x, const std::vector<T>& y) {
 	size_t n = x.size();
@@ -74,6 +77,9 @@ std::vector<T>& operator/=(std::vector<T>& x, const std::vector<T>& y) {
 	return x;
 }
 
+/**
+ * Euklidian norm
+ */
 template<class T>
 T norm2(const std::vector<T>& x, long double p = 2) {
 	T sum = 0;
@@ -83,9 +89,25 @@ T norm2(const std::vector<T>& x, long double p = 2) {
 	}
 	return sum;
 }
+
 template<class T>
 T norm(const std::vector<T>& x, long double p = 2.0) {
 	return pow((long double) norm2(x, p), 1 / p);
+}
+
+/**
+ * writes a String representation of given vector x to given ostream os
+ */
+template<class T> std::ostream& operator <<(std::ostream& os,
+		const std::vector<T>& x) {
+	size_t n = x.size();
+	os << '[';
+	for (size_t i = 0; i < n; i++) {
+		bool b = (i == (n - 1));
+ 		os << x[i] << (b ? "" : ", ");
+	}
+	os << ']';
+	return os;
 }
 
 #endif	/* _VECTORFUNC_H */

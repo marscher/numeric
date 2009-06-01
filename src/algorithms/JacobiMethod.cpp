@@ -14,7 +14,7 @@ JacobiMethod::JacobiMethod(const CRS& A, const std::vector<double>& b) {
 	setB(b);
 }
 
-vector<double> JacobiMethod::solveSystem(double epsilon) {
+vector<double> JacobiMethod::solveSystem(double epsilon, unsigned int iterations) {
 	CRS A = getA();
 	vector<double> diag = A.getTrace();
 
@@ -24,19 +24,22 @@ vector<double> JacobiMethod::solveSystem(double epsilon) {
 	}
 
 	CRS D_inv = CRS(diag, A.getDimension());
-	CRS L = A.getLowerTriangular(), U = A.getUpperTriangular(); //TODO L, U erzeugen!
+	//CRS L = A.getLowerTriangular(), U = A.getUpperTriangular(); //TODO L, U erzeugen!
 	vector<double> b = getB();
-	//TODO abbruchbedingung?
-	vector<double> x_m = D_inv * (b - ((L + U) * x_m));
 
+	vector<double> x_m;
+	while (iterations > 0) {
+		x_m = D_inv * (b - x_m);
+		iterations--;
+	}
 	return x_m;
 }
 
-void JacobiMethod::setA(const CRS& A) {
+inline void JacobiMethod::setA(const CRS& A) {
 	this->A = A;
 }
 
-void JacobiMethod::setB(const vector<double>& b) {
+inline void JacobiMethod::setB(const vector<double>& b) {
 	this->b = b;
 }
 

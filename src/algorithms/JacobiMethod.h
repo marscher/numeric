@@ -12,13 +12,14 @@
 using std::vector;
 class JacobiMethod {
 public:
+	// constructor
 	JacobiMethod(const CRS& A, const vector<double>& b);
 
 	// Getter
 	CRS& getA();
 	vector<double>& getB();
 
-	vector<double> solveSystem(double epsilon);
+	vector<double> solveSystem(double epsilon, unsigned int iterations);
 
 private:
 	// Matrix A, storing
