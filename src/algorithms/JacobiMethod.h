@@ -22,11 +22,11 @@ public:
 	vector<double> solveSystem(double epsilon, unsigned int iterations);
 
 private:
-	// Matrix A, storing
+	/// Matrix A, storing
 	CRS A;
 	vector<double> b;
 
-	// Setter
+	/// Setter
 	void setA(const CRS&);
 	void setB(const vector<double>&);
 };

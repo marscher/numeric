@@ -62,7 +62,7 @@ public:
 	CRS getLowerTriangular();
 
 	string toString();
-
+	void setStepSize(const unsigned int);
 private:
 	// containers
 	vector<double> val;
@@ -81,7 +81,7 @@ private:
 	// Setter
 	void setDimension(const unsigned int);
 	void setNumberOfEntries(const long);
-	void setStepSize(const unsigned int);
+
 	void setCol(const vector<int>&);
 	void setRowPtr(const vector<int>&);
 	void setVal(const vector<double>&);

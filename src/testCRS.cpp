@@ -5,7 +5,7 @@
 //============================================================================
 
 #include "datastructures/CRS.h"
-#include "datastructures/vectorFunc.cpp"
+#include "datastructures/VectorFunc.cpp"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -15,7 +15,7 @@ void pressEnter() {
 	cout << "Press Enter / Return to continue...\n";
 	cin.ignore(1, 0);
 }
-
+/*
 int main(int argc, char** argv) {
 	// set this to dimension of the three star operator and the unit vector
 	const unsigned int dimension = 3;
@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
 
 		// multiplies the matrix with the vector
 		vector<double> r = crs * v;
+		cout << *r.begin();
 		if (*r.begin() == 1 && *r.end() == 1)
 			cout << "test passed\n";
 
@@ -41,6 +42,7 @@ int main(int argc, char** argv) {
 		if (dimension < 100) {
 			cout << "result: " << r;
 		}
+
 
 		pressEnter();
 	} catch (exception& e) {
@@ -50,3 +52,4 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+*/

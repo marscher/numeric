@@ -84,7 +84,7 @@ CRS CRS::operator-(const CRS& A) {
 }
 
 /**
- * multipies the matrix with v in O(m) timesteps, where m is the number of entries != 0
+ * Multiplies the matrix with v in O(m) timesteps, where m is the number of entries != 0
  */
 vector<double> CRS::operator *(const vector<double>& v) {
 	unsigned int N = getDimension();
@@ -108,7 +108,7 @@ vector<double> CRS::operator *(const vector<double>& v) {
 /**
  * multiplies the matrix with v, storing the result in the result reference.
  * actually slower than the overloaded * operator, which seems unlogical, because
- * vector result has to be copied. (perhaps some compiler optimisations...)
+ * vector result has to be copied. (perhaps some compiler optimizations...)
  */
 void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
 	unsigned int N = getDimension();
@@ -137,9 +137,9 @@ CRS::CRS(const int operatorType, const unsigned int dimension,
 	setStepSize(stepSize);
 	switch (operatorType) {
 	case CRS::THREE_STAR_OPERATOR: {
-		if (getDimension() < 2)
-			throw DimensionException(
-					"dimension of three star operator have to be greater than 2.");
+//		if (getDimension() < 2)
+//			throw DimensionException(
+//					"dimension of three star operator have to be greater than 2.");
 
 		setNumberOfEntries((((dimension - 2) * 3) + 4));
 		generateCol(operatorType);
@@ -198,6 +198,7 @@ void CRS::generateVal(const int operatorType) {
 	}
 	setVal(val);
 }
+
 /**
  * generates the col array for given operator type
  */
@@ -240,6 +241,7 @@ CRS::CRS(double* val, int* col, int* rowPtr, unsigned int dimension,
 CRS::CRS(const vector<double>& val, const vector<int>& col,
 		const vector<int>& rowPtr, unsigned int dimension,
 		unsigned int stepSize) {
+	cout << "called CRS() default constructor\n";
 	setVal(val);
 	setCol(col);
 	setRowPtr(rowPtr);
