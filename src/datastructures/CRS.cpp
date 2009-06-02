@@ -271,8 +271,8 @@ CRS::CRS(vector<double>& diag, unsigned int dimension) {
 	vector<int> col (diag.size());
 	vector<int> rowPtr (diag.size() + 1);
 
-	unsigned int i;
-	for (i = 0; i < col.size(); i++) {
+	unsigned int i = 0;
+	for (; i < col.size(); i++) {
 		col[i] = i;
 		rowPtr[i] = i;
 	}
@@ -316,8 +316,8 @@ CRS CRS::getLowerTriangular() {
  */
 string CRS::toString() {
 	string result = "";
-	for (int i = 0; i < getDimension(); i++) {
-		for (int j = 0; j < getDimension(); j++) {
+	for (unsigned int i = 0; i < getDimension(); i++) {
+		for (unsigned int j = 0; j < getDimension(); j++) {
 			result += getElement(i, j);
 		}
 	}
