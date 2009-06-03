@@ -10,11 +10,11 @@
  *
  * \author $Author: Author: M. Luecke, M. Scherer $
  *
- * \version $Revision: $
+ * \version $Revision$
  *
  * \date $Date: $
  *
- * $Id: $
+ * $Id$
  *
  */
 
