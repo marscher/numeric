@@ -19,7 +19,7 @@ double f(double x) {
 int main(int argc, char **argv) {
 	int stepSize = 100;
 	int dimension = 100;
-	int iterations = 100000;
+	int iterations = 10000;
 	double epsilon = 10E-8;
 
 	CRS A(CRS::THREE_STAR_OPERATOR, dimension, stepSize);
@@ -36,12 +36,9 @@ int main(int argc, char **argv) {
 		b.push_back(y);
 	}
 
-	std::cout << b << endl;
-	cout << b.size();
-
 	JacobiMethod jm(A, b);
 
 	vector<double> result = jm.solveSystem(epsilon, iterations);
 	cout<< "result: \n" << result << endl;
-	//cout << max_element(result.begin(), result.end());
+	cout << *max_element(result.begin(), result.end());
 }

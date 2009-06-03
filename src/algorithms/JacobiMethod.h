@@ -1,8 +1,21 @@
-/*
- * JacobiMethod.h
+/**
+ * \class JacobiMethod
  *
- *  Created on: 22.05.2009
- *      Author: marusha
+ * \ingroup algorithms
+ * \defgroup algorithms
+ *
+ * \brief implements the Jacobi method for the one dimensional heat conduction formula.
+ *
+ * This class is a datastructure for sparse matrices.
+ *
+ * \author $Author: Author: M. Luecke, M. Scherer $
+ *
+ * \version $Revision: $
+ *
+ * \date $Date: $
+ *
+ * $Id: $
+ *
  */
 
 #ifndef JACOBIMETHOD_H_

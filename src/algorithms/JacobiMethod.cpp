@@ -1,8 +1,21 @@
-/*
- * JacobiMethod.cpp
+/**
+ * \class JacobiMethod
  *
- *  Created on: 22.05.2009
- *      Author: marusha
+ * \ingroup algorithms
+ * \defgroup algorithms
+ *
+ * \brief implements the Jacobi method for the one dimensional heat conduction formula.
+ *
+ * This class is a datastructure for sparse matrices.
+ *
+ * \author $Author: Author: M. Luecke, M. Scherer $
+ *
+ * \version $Revision: $
+ *
+ * \date $Date: $
+ *
+ * $Id: $
+ *
  */
 
 #include "JacobiMethod.h"
@@ -34,12 +47,13 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 	vector<double> u_new(u.size());
 	do {
 		u_new.clear();
+		/// for most left element take right neighbour by an half instead of 0.
 		u_new.push_back(diagonalCoefficient * theta * u[1] / 2);
 
 		for (size_t i = 1; i < u.size() - 1; i++) {
 			u_new.push_back(diagonalCoefficient * theta * (u[i + 1] + u[i - 1]));
 		}
-
+		/// for most right element take left neighbour by an half instead of 0.
 		u_new.push_back(diagonalCoefficient * theta * u[u.size() - 2] / 2);
 
 		iterations--;
