@@ -9,6 +9,9 @@
 #include <iostream>
 #include <iterator>
 
+typedef std::vector<double> dvector;
+typedef std::vector<int> ivector;
+
 template<class T>
 std::vector<T>& operator+=(std::vector<T>& x, const std::vector<T>& y) {
 	size_t n = x.size();
@@ -17,6 +20,7 @@ std::vector<T>& operator+=(std::vector<T>& x, const std::vector<T>& y) {
 	}
 	return x;
 }
+
 template<class T>
 std::vector<T> operator+(const std::vector<T>& x, const std::vector<T>& y) {
 	std::vector<T> temp(x);
@@ -32,6 +36,7 @@ std::vector<T>& operator-=(std::vector<T>& x, const std::vector<T>& y) {
 	}
 	return x;
 }
+
 template<class T>
 std::vector<T> operator-(const std::vector<T>& x, const std::vector<T>& y) {
 	std::vector<T> temp(x);
@@ -104,7 +109,7 @@ template<class T> std::ostream& operator <<(std::ostream& os,
 	os << '[';
 	for (size_t i = 0; i < n; i++) {
 		bool b = (i == (n - 1));
- 		os << x[i] << (b ? "" : ", ");
+		os << x[i] << (b ? "" : ", ");
 	}
 	os << ']';
 	return os;

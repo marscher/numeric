@@ -1,10 +1,22 @@
-//============================================================================
-// Name        : CRS.cpp
-// Author      : Author: M. Luecke, M. Scherer
-// Version     :
-//============================================================================
+/**
+ * \class CRS
+ *
+ * \ingroup datastructures
+ *
+ * \brief Compressed Row Storage
+ *
+ * This class is a datastructure for sparse matrices.
+ *
+ * \version $Revision$
+ *
+ * $Id$
+ *
+ */
 #include <iostream>
+#include <sstream>
+#include <string>
 using namespace std;
+
 #include "CRS.h"
 #include "../exceptions/DimensionException.h"
 
@@ -84,12 +96,15 @@ CRS CRS::operator-(const CRS& A) {
 }
 
 /**
- * Multiplies the matrix with v in O(m) timesteps, where m is the number of entries != 0
+ * Multiplies the matrix with v in O(m), where m is the number of entries != 0
  */
 vector<double> CRS::operator *(const vector<double>& v) {
 	unsigned int N = getDimension();
 	if (v.size() != N) {
-		throw DimensionException("Dimensions do not match each other.");
+		stringstream s;
+		s << "Dimensions do not match each other. Dim of Matrix = " << N
+				<< " & Dim of v = " << v.size();
+		throw DimensionException(s.str());
 	}
 
 	// inits N elements with 0.
@@ -137,9 +152,9 @@ CRS::CRS(const int operatorType, const unsigned int dimension,
 	setStepSize(stepSize);
 	switch (operatorType) {
 	case CRS::THREE_STAR_OPERATOR: {
-//		if (getDimension() < 2)
-//			throw DimensionException(
-//					"dimension of three star operator have to be greater than 2.");
+		//		if (getDimension() < 2)
+		//			throw DimensionException(
+		//					"dimension of three star operator have to be greater than 2.");
 
 		setNumberOfEntries((((dimension - 2) * 3) + 4));
 		generateCol(operatorType);
@@ -241,7 +256,7 @@ CRS::CRS(double* val, int* col, int* rowPtr, unsigned int dimension,
 CRS::CRS(const vector<double>& val, const vector<int>& col,
 		const vector<int>& rowPtr, unsigned int dimension,
 		unsigned int stepSize) {
-	cout << "called CRS() default constructor\n";
+	//cout << "called CRS() default constructor\n";
 	setVal(val);
 	setCol(col);
 	setRowPtr(rowPtr);
@@ -270,8 +285,8 @@ CRS::CRS(vector<double>& diag, unsigned int dimension) {
 	setVal(diag);
 	setDimension(dimension);
 
-	vector<int> col (diag.size());
-	vector<int> rowPtr (diag.size() + 1);
+	vector<int> col(diag.size());
+	vector<int> rowPtr(diag.size() + 1);
 
 	unsigned int i = 0;
 	for (; i < col.size(); i++) {
@@ -317,16 +332,19 @@ CRS CRS::getLowerTriangular() {
  * do not use this animal!
  */
 string CRS::toString() {
-	string result = "";
+	ostringstream out;
 	for (unsigned int i = 0; i < getDimension(); i++) {
+		out << '[';
 		for (unsigned int j = 0; j < getDimension(); j++) {
-			result += getElement(i, j);
+			out << getElement(i, j) << ' ';
 		}
+		out << "]\n";
 	}
-	return result;
+
+	return out.str();
 }
 
-// getter + setter
+/// getter + setter
 const long CRS::getNumberOfEntries() const {
 	return numberOfEntries;
 }

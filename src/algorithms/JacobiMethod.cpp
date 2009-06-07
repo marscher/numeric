@@ -2,7 +2,6 @@
  * \class JacobiMethod
  *
  * \ingroup algorithms
- * \defgroup algorithms
  *
  * \brief implements the Jacobi method for the one dimensional heat conduction formula.
  *
@@ -23,58 +22,102 @@
 #include "../datastructures/VectorFunc.cpp"
 #include <iostream>
 using namespace std;
+
+/**
+ * \param A system matrix of the linear system.
+ * \param b start vector of system.
+ */
 JacobiMethod::JacobiMethod(const CRS& A, const vector<double>& b) {
 	setA(A);
 	setB(b);
 }
 
-/**!\brief löst das system
+/**
+ * Solves the linear system Ax = b
  *
+ * \param epsilon if defect is smaller than this threshold, than the iterative method will stop
+ * \param maxIterations the method will only iterate until maxIterations is reached
+ * \param timeStepSize time steps (resolution)
+ * \param checkInterval how often should be checked whether the convergence criterium is reached
  */
 vector<double> JacobiMethod::solveSystem(double epsilon,
-		unsigned int iterations) {
+		const unsigned int maxIterations, double timeStepSize,
+		unsigned int checkInterval) {
 
-	CRS & A = getA();
-	vector<double> & b = getB();
+	vector<double> convergenceRate;
+	unsigned int currentIteration = 0;
+	int count = 1;
+	double defect_old = -1, defect_new;
 
-	int timestepSize = 5; // zeit einheit?
-	double h_square = 1.0 / (A.getStepSize() * A.getStepSize());
-	double theta = (timestepSize / h_square);
-	double diagonalCoefficient = 1 / (1 + (2 * theta));
+	const dvector & values = getA().getVal();
+	const ivector & rowPtr = getA().getRowPtr();
+	const ivector & col = getA().getCol();
 
-	/// we start with start values of vector b.
-	vector<double> u = b;
-	vector<double> u_new(u.size());
+	cout << "val: " << values << endl << "row: " << rowPtr << endl << "col: " << col << endl;
+
+	const dvector & b = getB();
+
+	dvector x = dvector(b), y(b.size());
+
 	do {
-		u_new.clear();
-		/// for most left element take right neighbour by an half instead of 0.
-		u_new.push_back(diagonalCoefficient * theta * u[1] / 2);
+		currentIteration++;
 
-		for (size_t i = 1; i < u.size() - 1; i++) {
-			u_new.push_back(diagonalCoefficient * theta * (u[i + 1] + u[i - 1]));
+		for (unsigned int i = 0; i < getA().getDimension(); i++) {
+
+			double t = 0.0;
+
+			/// for each entry != 0
+			for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
+				t += values[j] * x[col[j]];
+			}
+
+			t -= b[i];
+			t /= values[rowPtr[i]]; /// divide with diagonal coefficient
+			y[i] = x[i] - t;
 		}
-		/// for most right element take left neighbour by an half instead of 0.
-		u_new.push_back(diagonalCoefficient * theta * u[u.size() - 2] / 2);
 
-		iterations--;
-		u = u_new;
-	} while (iterations > 0);
+		/// after checkInterval iterations:
+		if (currentIteration == count * checkInterval) {
+			count++;
+			defect_new = norm(y - x);
+			//cout << "defect: " << defect_new << endl;
 
-	return u;
-}
+			/// check, if we met the convergence criteria
+			if (defect_new < epsilon) {
+				cout << "defect < epsilon after " << currentIteration << endl;
+				break;
+			}
 
-inline void JacobiMethod::setA(const CRS& A) {
-	this->A = A;
+			if (defect_old < 0)
+				defect_old = defect_new;
+
+			double c = defect_new / defect_old;
+			convergenceRate.push_back(c);
+			//cout << c << endl;
+			defect_old = defect_new;
+		}
+
+		///
+		cout << "x_i: " << x << endl;
+		cout << "x_i+1: " << y << endl;
+		x = y;
+	} while (currentIteration < maxIterations);
+
+	return y;
 }
 
 inline void JacobiMethod::setB(const vector<double>& b) {
 	this->b = b;
 }
 
-CRS& JacobiMethod::getA() {
-	return A;
+inline void JacobiMethod::setA(const CRS& crs) {
+	this->A = crs;
 }
 
-vector<double>& JacobiMethod::getB() {
+const vector<double>& JacobiMethod::getB() const {
 	return b;
+}
+
+const CRS& JacobiMethod::getA() const {
+	return A;
 }

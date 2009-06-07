@@ -2,46 +2,43 @@
  * \class JacobiMethod
  *
  * \ingroup algorithms
- * \defgroup algorithms
+ * \defgroup algorithms Algorithms
  *
  * \brief implements the Jacobi method for the one dimensional heat conduction formula.
  *
  * This class is a datastructure for sparse matrices.
  *
- * \author $Author: Author: M. Luecke, M. Scherer $
- *
  * \version $Revision$
- *
- * \date $Date: $
  *
  * $Id$
  *
  */
-
 #ifndef JACOBIMETHOD_H_
 #define JACOBIMETHOD_H_
 #include <vector>
 #include "../datastructures/CRS.h"
 using std::vector;
+
 class JacobiMethod {
 public:
-	// constructor
+	/// constructor
 	JacobiMethod(const CRS& A, const vector<double>& b);
 
-	// Getter
-	CRS& getA();
-	vector<double>& getB();
+	/// Getter
+	const vector<double>& getB() const;
+	const CRS& getA() const;
 
-	vector<double> solveSystem(double epsilon, unsigned int iterations);
+	vector<double> solveSystem(double epsilon,
+			const unsigned int maxIterations, double timeStepSize,
+			unsigned int checkInterval = 15);
 
 private:
-	/// Matrix A, storing
-	CRS A;
 	vector<double> b;
+	CRS A;
 
 	/// Setter
-	void setA(const CRS&);
 	void setB(const vector<double>&);
+	void setA(const CRS&);
 };
 
 #endif /* JACOBIMETHOD_H_ */

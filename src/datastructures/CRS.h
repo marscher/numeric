@@ -2,22 +2,17 @@
  * \class CRS
  *
  * \ingroup datastructures
- * \defgroup datastructures
+ * \defgroup datastructures Datastructures
  *
  * \brief Compressed Row Storage
  *
  * This class is a datastructure for sparse matrices.
  *
- * \author $Author: Author: M. Luecke, M. Scherer $
- *
  * \version $Revision$
- *
- * \date $Date: $
  *
  * $Id$
  *
  */
-
 #ifndef CRS_H_
 #define CRS_H_
 #include <iostream>
@@ -107,6 +102,6 @@ private:
 	void generateVal(const int operatorType);
 	void generateCol(const int operatorType);
 	void generateRowPtr(const int operatorType);
-};
+}; // end of class CRS
 
 #endif /* CRS_H_ */
