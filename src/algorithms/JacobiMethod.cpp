@@ -78,11 +78,11 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 		if (currentIteration == count * checkInterval) {
 			count++;
 			defect_new = norm((getA() * y) - b);
-			cout << "defect: " << defect_new << endl;
+			cout << "# defect: " << defect_new << endl;
 
 			/// check, if we met the convergence criteria
 			if (defect_new < epsilon) {
-				cout << "defect < epsilon after " << currentIteration << endl;
+				cout << "# defect < epsilon after " << currentIteration << endl;
 				break;
 			}
 
@@ -90,6 +90,7 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 				defect_old = defect_new;
 
 			double c = defect_new / defect_old;
+			cout << c << '\n';
 			convergenceRate.push_back(c);
 			defect_old = defect_new;
 		}

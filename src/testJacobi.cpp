@@ -108,20 +108,19 @@ int main(int argc, char **argv) {
 		double y = f(i);
 		b.push_back(y);
 	}
-	cout << b << endl;
+
 	CRS A = generateSystemMatrix(stepSize, timeStepSize);
+	//cout << A.toString() << endl;
 
-	//cout << A.toString();
+	JacobiMethod jm(A, b);
+	GS gs(A, b);
 
-
-	 JacobiMethod jm(A, b);
-	 GS gs(A, b);
-	 dvector result = jm.solveSystem(epsilon, maxIterations, timeStepSize,
-	 checkInterval);
-	 dvector result_gs = gs.solveSystem(epsilon, maxIterations, timeStepSize,
-	 checkInterval);
-	 cout << "result: \n" << result << endl;
-	 cout << *max_element(result.begin(), result.end());
+	dvector result = jm.solveSystem(epsilon, maxIterations, timeStepSize,
+			checkInterval);
+	dvector result_gs = gs.solveSystem(epsilon, maxIterations, timeStepSize,
+			checkInterval);
+	
+	cout << "# result: " << result << endl;
 
 	return 0;
 }
