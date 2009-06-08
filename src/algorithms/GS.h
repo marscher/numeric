@@ -14,21 +14,13 @@
 
 #ifndef GS_H_
 #define GS_H_
-#include <vector>
-using namespace std;
+#include "Solver.h"
 
-class GS {
+class GS : public Solver {
 public:
-	GS(const vector<double>& b);
-	virtual ~GS();
-	vector<double>& getB();
-	vector<double> solveSystem(int stepSize, double epsilon,
-			unsigned int iterations, double timeStepSize,
-			unsigned int checkInterval);
-private:
-	vector<double> b;
-	/// Setter
-	void setB(const vector<double>&);
+	GS(const CRS& A, const vector<double>& b);
+	vector<double> solveSystem(double epsilon, unsigned int maxIterations,
+			double timeStepSize, unsigned int checkInterval);
 };
 
 #endif /* GS_H_ */

@@ -1,24 +1,30 @@
-/*
- * testJacobi.cpp
+/**
+ * generates the system matrix A and the start vector b
+ * and solves the linear system using the parameters stepSize and timeStepSize.
  *
- *  Created on: 02.06.2009
- *      Author: marusha
+ * \version $Revision$
+ * *
+ * $Id$
+ *
+ * Created on: 02.06.2009
  */
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+using namespace std;
+
 #include "datastructures/CRS.h"
 #include "algorithms/JacobiMethod.h"
 #include "datastructures/VectorFunc.cpp"
 #include "algorithms/GS.h"
 
-#include <vector>
-#include <iostream>
-#include <algorithm>
-#include <cmath>
-using namespace std;
-
 double PI = 3.14159265;
 
 double f(double x) {
-	return 100 * (sin((PI / 2) * ((16* x / 100) - 1)) + 1);
+
+	return (-(x * x) + 100* x ) * (rand() % 3 + 1);
+	//return 100 * (sin((PI / 2) * ((16* x / 100) - 1)) + 1);
 }
 
 /**
@@ -35,7 +41,7 @@ CRS generateSystemMatrix(int stepSize, double timeStepSize) {
 	/// number of entries
 	int m = ((stepSize - 2) * 3) + 4;
 
-	/// init values array
+	/// init value array
 	dvector values;
 	values.reserve(m);
 
@@ -81,25 +87,24 @@ CRS generateSystemMatrix(int stepSize, double timeStepSize) {
 
 	rowPtr[stepSize] = rowPtr[stepSize - 1] + 2;
 
-	CRS A(values, col, rowPtr, 100, 100);
+	CRS A(values, col, rowPtr, stepSize, stepSize);
 
 	return A;
 }
 
 int main(int argc, char **argv) {
- 	int stepSize = 100;
-	double timeStepSize = 1;
-	unsigned int iterations = 500;
+	int stepSize = 100;
+	double timeStepSize = 0.9;
+	unsigned int maxIterations = 10;
 	int checkInterval = 1;
 	double epsilon = 10E-8;
 
 	/// inits start vector at t = 0.
 	/// b = [0, ..., 0] (Dirichlet)
-	vector<double> b;
+	dvector b;
 	b.reserve(stepSize);
 
-	// TODO check intervall
-	for (int i = 0; i <= stepSize; i++) {
+	for (int i = 0; i < stepSize; i++) {
 		double y = f(i);
 		b.push_back(y);
 	}
@@ -109,13 +114,14 @@ int main(int argc, char **argv) {
 	//cout << A.toString();
 
 
-	JacobiMethod jm(A, b);
-	GS gs(b);
-	vector<double> result = jm.solveSystem(epsilon, iterations, timeStepSize,
-			checkInterval);
-	//gs.solveSystem(stepSize, epsilon, iterations, timeStepSize, checkInterval);
-	cout << "result: \n" << result << endl;
-	cout << *max_element(result.begin(), result.end());
+	 JacobiMethod jm(A, b);
+	 GS gs(A, b);
+	 dvector result = jm.solveSystem(epsilon, maxIterations, timeStepSize,
+	 checkInterval);
+	 dvector result_gs = gs.solveSystem(epsilon, maxIterations, timeStepSize,
+	 checkInterval);
+	 cout << "result: \n" << result << endl;
+	 cout << *max_element(result.begin(), result.end());
 
 	return 0;
 }

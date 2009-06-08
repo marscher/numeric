@@ -1,5 +1,14 @@
-// stolen from: http://www.cplusplus.com/forum/general/8493/
-
+/**
+ *
+ * \ingroup datastructures
+ *
+ * \brief implements some functions on vectors
+ *
+ * \version $Revision$
+ *
+ * $Id$
+ * stolen from: http://www.cplusplus.com/forum/general/8493/
+ */
 #ifndef _VECTORFUNC_H
 #define	_VECTORRUNC_H
 
@@ -7,7 +16,8 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
-#include <iterator>
+
+/// no need for so long declarations...
 
 typedef std::vector<double> dvector;
 typedef std::vector<int> ivector;
@@ -95,6 +105,9 @@ T norm2(const std::vector<T>& x, long double p = 2) {
 	return sum;
 }
 
+/**
+ * calcs the p-norm of given vector. If p is not specified euclidian (p = 2) is assumed.
+ */
 template<class T>
 T norm(const std::vector<T>& x, long double p = 2.0) {
 	return pow((long double) norm2(x, p), 1 / p);

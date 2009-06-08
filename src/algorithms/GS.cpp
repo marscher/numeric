@@ -3,99 +3,84 @@
  *
  * \ingroup algorithms
  *
- * \brief TODO describe me
+ * \brief uses the Gaus Seidel method to solve the linear system Ax = b.
  *
- * TODO detailed describtion
  * $Version: $
  *
  * $Id:  $
  * first created on 11:13:53 2009
  */
 #include <iostream>
+using namespace std;
 
 #include "GS.h"
 #include "../datastructures/VectorFunc.cpp"
 
-GS::GS(const vector<double>& b) {
-	setB(b);
-}
-
-GS::~GS() {
-	// TODO Auto-generated destructor stub
-}
-
-void GS::setB(const vector<double>& b) {
-	this->b = b;
+GS::GS(const CRS& A, const vector<double>& b) :
+	Solver(A, b) {
 }
 
 /**
- * solves the linear system
- * \param stepSize number of grid points
+ *  Solves the linear system Ax = b
  * \param epsilon if defect is smaller than this threshold, than the iterative method will stop
  * \param maxIterations the method will only iterate until maxIterations is reached
  * \param timeStepSize time steps (resolution)
  * \param checkInterval how often should be checked whether the convergence criterium is reached
  */
-vector<double> GS::solveSystem(int stepSize, double epsilon,
-		const unsigned int maxIterations, double timeStepSize,
-		unsigned int checkInterval = 15) {
+vector<double> GS::solveSystem(double epsilon, unsigned int maxIterations,
+		double timeStepSize, unsigned int checkInterval) {
 
-	double h_square = 1.0 / (stepSize * stepSize);
-	double theta = (timeStepSize / h_square);
-	double diagonalCoefficient = 1 / (1 + (2 * theta));
-	double factor = theta * diagonalCoefficient;
-
-	/// we start with start values of vector b.
-	vector<double> b = getB();
-	vector<double> u = b;
-	vector<double> u_new(u.size());
-	double defect = 1;
-	vector<double> convergenceRate;
+	dvector convergenceRate;
 	unsigned int currentIteration = 0;
 	int count = 1;
+	double defect_old = -1, defect_new;
+
+	const dvector & values = getA().getVal();
+	const ivector & rowPtr = getA().getRowPtr();
+	const ivector & col = getA().getCol();
+	const dvector & b = getB();
+	dvector x = dvector(b);
+	double t;
+
 	do {
-		u_new.clear();
-
-		u_new.push_back(diagonalCoefficient * ((theta * u[0]) + b[0]));
-
-		for (size_t i = 1; i < u.size() - 1; i++) {
-			u_new.push_back(diagonalCoefficient * ((theta * (u[i + 1] + u_new[i
-					- 1])) + b[i]));
+		currentIteration++;
+		for (unsigned int i = 0; i < getA().getDimension(); i++) {
+			t = 0.0;
+			/// for each entry != 0
+			for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
+				int colj = col[j];
+				double v = values[colj];
+				double xj = x[colj];
+				t += v * xj;
+			}
+			/// substract with component of the right side of linear system
+			t -= b[i];
+			/// divide with diagonal coefficient
+			t /= values[rowPtr[i]];
+			/// adapt the new iterative value
+			x[i] -= t;
 		}
 
-		u_new.push_back(diagonalCoefficient * ((theta * (u[u.size()]
-				+ u_new[u.size() - 1])) + b[b.size()]));
-
+		/// after checkInterval iterations:
 		if (currentIteration == count * checkInterval) {
 			count++;
-			//			cout << "u: " << u << endl << "u': " << u_new << endl << "u - u':"
-			//					<< u - u_new << endl;
-			double defect_new = norm(u - u_new);
-			//cout << "defect: " << defect_new << endl;
+			defect_new = norm((getA() * x) - b);
+			cout << "defect: " << defect_new << endl;
 
 			/// check, if we met the convergence criteria
-			if (defect < epsilon) {
+			if (defect_new < epsilon) {
 				cout << "defect < epsilon after " << currentIteration << endl;
 				break;
 			}
 
-			if (currentIteration == 0) {
-				defect = defect_new;
-			}
+			if (defect_old < 0)
+				defect_old = defect_new;
 
-			double c = defect_new / defect;
+			double c = defect_new / defect_old;
 			convergenceRate.push_back(c);
-			cout << c << endl;
-			defect = defect_new;
+			defect_old = defect_new;
 		}
-
-		currentIteration++;
-		u = u_new;
 	} while (currentIteration < maxIterations);
-	cout << convergenceRate;
-	return u;
-}
 
-inline vector<double>& GS::getB() {
-	return b;
+	return x;
 }

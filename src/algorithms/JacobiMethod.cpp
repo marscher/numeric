@@ -7,18 +7,13 @@
  *
  * This class is a datastructure for sparse matrices.
  *
- * \author $Author: Author: M. Luecke, M. Scherer $
- *
  * \version $Revision$
- *
- * \date $Date: $
  *
  * $Id$
  *
  */
 
 #include "JacobiMethod.h"
-//TODO dont do that!
 #include "../datastructures/VectorFunc.cpp"
 #include <iostream>
 using namespace std;
@@ -27,9 +22,8 @@ using namespace std;
  * \param A system matrix of the linear system.
  * \param b start vector of system.
  */
-JacobiMethod::JacobiMethod(const CRS& A, const vector<double>& b) {
-	setA(A);
-	setB(b);
+JacobiMethod::JacobiMethod(const CRS& A, const vector<double>& b) :
+	Solver(A, b) {
 }
 
 /**
@@ -44,7 +38,7 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 		const unsigned int maxIterations, double timeStepSize,
 		unsigned int checkInterval) {
 
-	vector<double> convergenceRate;
+	dvector convergenceRate;
 	unsigned int currentIteration = 0;
 	int count = 1;
 	double defect_old = -1, defect_new;
@@ -52,35 +46,39 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 	const dvector & values = getA().getVal();
 	const ivector & rowPtr = getA().getRowPtr();
 	const ivector & col = getA().getCol();
-
-	cout << "val: " << values << endl << "row: " << rowPtr << endl << "col: " << col << endl;
-
 	const dvector & b = getB();
-
 	dvector x = dvector(b), y(b.size());
+	double t;
 
 	do {
 		currentIteration++;
-
 		for (unsigned int i = 0; i < getA().getDimension(); i++) {
-
-			double t = 0.0;
-
+			t = 0.0;
 			/// for each entry != 0
 			for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
-				t += values[j] * x[col[j]];
+				int colj = col[j];
+				double v = values[colj];
+				double xj = x[colj];
+				t += v * xj;
 			}
-
+			/// substract with component of the right side of linear system
 			t -= b[i];
-			t /= values[rowPtr[i]]; /// divide with diagonal coefficient
+			/// divide with diagonal coefficient
+			t /= values[rowPtr[i]];
+			/// adapt the new iterative value
 			y[i] = x[i] - t;
 		}
+
+		///
+		//cout << "x_i: " << x << endl;
+		//cout << "x_i+1: " << y << endl;
+		x = y;
 
 		/// after checkInterval iterations:
 		if (currentIteration == count * checkInterval) {
 			count++;
-			defect_new = norm(y - x);
-			//cout << "defect: " << defect_new << endl;
+			defect_new = norm((getA() * y) - b);
+			cout << "defect: " << defect_new << endl;
 
 			/// check, if we met the convergence criteria
 			if (defect_new < epsilon) {
@@ -93,31 +91,10 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 
 			double c = defect_new / defect_old;
 			convergenceRate.push_back(c);
-			//cout << c << endl;
 			defect_old = defect_new;
 		}
-
-		///
-		cout << "x_i: " << x << endl;
-		cout << "x_i+1: " << y << endl;
-		x = y;
 	} while (currentIteration < maxIterations);
 
 	return y;
 }
 
-inline void JacobiMethod::setB(const vector<double>& b) {
-	this->b = b;
-}
-
-inline void JacobiMethod::setA(const CRS& crs) {
-	this->A = crs;
-}
-
-const vector<double>& JacobiMethod::getB() const {
-	return b;
-}
-
-const CRS& JacobiMethod::getA() const {
-	return A;
-}
