@@ -14,10 +14,10 @@
 #include <cstdlib>
 using namespace std;
 
-#include "datastructures/CRS.h"
-#include "algorithms/JacobiMethod.h"
-#include "datastructures/VectorFunc.cpp"
-#include "algorithms/GS.h"
+#include "../datastructures/CRS.h"
+#include "../algorithms/JacobiMethod.h"
+#include "../datastructures/VectorFunc.cpp"
+#include "../algorithms/GS.h"
 
 double PI = 3.14159265;
 
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 			checkInterval);
 	dvector result_gs = gs.solveSystem(epsilon, maxIterations, timeStepSize,
 			checkInterval);
-	
+
 	cout << "# result: " << result << endl;
 
 	return 0;

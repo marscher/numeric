@@ -1,11 +1,14 @@
-//============================================================================
-// Name        : test.cpp
-// Author      : Author: M. Luecke, M. Scherer
-// Version     :
-//============================================================================
+/**
+ * tests the CRS datastructure with a simple matrix vector multiplication
+ *
+ * \version $Revision$
+ * *
+ * $Id$
+ *
+ */
 
-#include "datastructures/CRS.h"
-#include "datastructures/VectorFunc.cpp"
+#include "../datastructures/CRS.h"
+#include "../datastructures/VectorFunc.cpp"
 #include <iostream>
 #include <vector>
 using namespace std;
