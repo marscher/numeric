@@ -5,9 +5,9 @@
  *
  * \brief uses the Gaus Seidel method to solve the linear system Ax = b.
  *
- * $Version: $
+ * $Revision$
  *
- * $Id:  $
+ * $Id$
  * first created on 11:13:53 2009
  */
 #include <iostream>
@@ -30,7 +30,6 @@ GS::GS(const CRS& A, const vector<double>& b) :
 vector<double> GS::solveSystem(double epsilon, unsigned int maxIterations,
 		double timeStepSize, unsigned int checkInterval) {
 
-	dvector convergenceRate;
 	unsigned int currentIteration = 0;
 	int count = 1;
 	double defect_old = -1, defect_new;
@@ -48,10 +47,7 @@ vector<double> GS::solveSystem(double epsilon, unsigned int maxIterations,
 			t = 0.0;
 			/// for each entry != 0
 			for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
-				int colj = col[j];
-				double v = values[colj];
-				double xj = x[colj];
-				t += v * xj;
+				t += values[j] * x[col[j]];
 			}
 			/// substract with component of the right side of linear system
 			t -= b[i];
@@ -78,10 +74,9 @@ vector<double> GS::solveSystem(double epsilon, unsigned int maxIterations,
 
 			double c = defect_new / defect_old;
 			cout << c << '\n';
-			convergenceRate.push_back(c);
 			defect_old = defect_new;
 		}
 	} while (currentIteration < maxIterations);
-
+	cout << "# needed iterations: = " << currentIteration << endl;
 	return x;
 }

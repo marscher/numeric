@@ -3,13 +3,9 @@
  *
  * \ingroup algorithms
  *
- * \brief TODO describe me
+ * $Revision Version: $
  *
- * TODO detailed describtion
- * $Version: $
- *
- * $Id:  $
- * first created on 11:13:53 2009
+ * $Id$
  */
 
 #ifndef GS_H_

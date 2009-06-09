@@ -38,7 +38,6 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 		const unsigned int maxIterations, double timeStepSize,
 		unsigned int checkInterval) {
 
-	dvector convergenceRate;
 	unsigned int currentIteration = 0;
 	int count = 1;
 	double defect_old = -1, defect_new;
@@ -56,10 +55,7 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 			t = 0.0;
 			/// for each entry != 0
 			for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
-				int colj = col[j];
-				double v = values[colj];
-				double xj = x[colj];
-				t += v * xj;
+				t += values[j] * x[col[j]];
 			}
 			/// substract with component of the right side of linear system
 			t -= b[i];
@@ -69,9 +65,6 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 			y[i] = x[i] - t;
 		}
 
-		///
-		//cout << "x_i: " << x << endl;
-		//cout << "x_i+1: " << y << endl;
 		x = y;
 
 		/// after checkInterval iterations:
@@ -91,11 +84,10 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 
 			double c = defect_new / defect_old;
 			cout << c << '\n';
-			convergenceRate.push_back(c);
 			defect_old = defect_new;
 		}
 	} while (currentIteration < maxIterations);
-
+	cout << "# needed iterations: = " << currentIteration << endl;
 	return y;
 }
 
