@@ -3,7 +3,7 @@
  *
  * \ingroup algorithms
  *
- * $Revision Version: $
+ * \version $Revision$
  *
  * $Id$
  */

@@ -5,10 +5,9 @@
  *
  * \brief parent class of algorithms solving a linear System Ax = b
  *
- * $Version: $
+ * \version $Revision$
  *
  * $Id$
- * first created on 12:52:18 2009
  */
 
 #include "Solver.h"

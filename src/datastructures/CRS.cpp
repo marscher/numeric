@@ -121,29 +121,6 @@ vector<double> CRS::operator *(const vector<double>& v) {
 }
 
 /**
- * multiplies the matrix with v, storing the result in the result reference.
- * actually slower than the overloaded * operator, which seems unlogical, because
- * vector result has to be copied. (perhaps some compiler optimizations...)
- */
-void CRS::vektorMult(const vector<double>& v, vector<double>& result) {
-	unsigned int N = getDimension();
-	if (v.size() != N) {
-		throw DimensionException("Dimensions do not match each other.");
-	}
-
-	// inits elements with 0.
-	result = vector<double> (N, 0.0);
-	for (unsigned int i = 0; i < N; i++) {
-		// for all entries (!=0) in this row
-		for (int j = rowPtr[i]; j < rowPtr[i + 1]; j++) {
-			// omits multiplication where Matrix[i, j] = 0.
-			double c = val[j] * v[col[j]];
-			result[i] += c;
-		}
-	}
-}
-
-/**
  *  TODO Describe me
  */
 CRS::CRS(const int operatorType, const unsigned int dimension,

@@ -17,11 +17,12 @@ using namespace std;
 #include "../algorithms/JacobiMethod.h"
 #include "../datastructures/VectorFunc.cpp"
 #include "../algorithms/GS.h"
+#include "../algorithms/CG.h"
 
 double PI = 3.14159265;
 
 double f(double x) {
-	return (-(x * x) + 100* x ) * (rand() % 3 + 1);
+	return (sin(x * 100 - PI / 2) + 1) * 100;
 }
 
 /**
@@ -33,7 +34,7 @@ CRS generateSystemMatrix(int stepSize, double timeStepSize) {
 	/// h is equal to the dimension of vector
 	double h_square = 1.0 / stepSize * stepSize;
 	double theta = timeStepSize / h_square;
-	double diagonalCoefficient = 1.0 + (2 * theta);
+	double diagonalCoefficient = 1.0 + 2 * theta;
 
 	/// number of entries
 	int m = ((stepSize - 2) * 3) + 4;
@@ -92,8 +93,9 @@ CRS generateSystemMatrix(int stepSize, double timeStepSize) {
 void printHelp() {
 	cout << "-h step size of 2D-Grid" << endl << "-t time step size" << endl
 			<< "-c how much iterations should be made before defect is calculated"
-			<< endl << "-m method to use (int) 0, 1" << endl
-			<< "--help this message" << endl;
+			<< endl << "-m method to use (int) 0, 1, 2" << endl
+			<< "-i maximum iterations (int)" << endl << "--help this message"
+			<< endl;
 }
 
 int main(int argc, char **argv) {
@@ -112,7 +114,7 @@ int main(int argc, char **argv) {
 	for (i = v.begin(); i != v.end(); i++) {
 		cout << *i << ' ';
 		if (strcmp(*i, "-m") == 0) {
-			method = atoi((*i + 1));
+			method = atoi(*(i + 1));
 			continue;
 		}
 		if (strcmp(*i, "-h") == 0) {
@@ -127,6 +129,10 @@ int main(int argc, char **argv) {
 			checkInterval = atoi(*(i + 1));
 			continue;
 		}
+		if (strcmp(*i, "-i") == 0) {
+			maxIterations = atoi(*(i + 1));
+			continue;
+		}
 		if (strcmp(*i, "--help") == 0) {
 			printHelp();
 			return 0;
@@ -135,42 +141,52 @@ int main(int argc, char **argv) {
 
 	cout << "\n\n# using following values:\n" << "# stepSize: " << stepSize
 			<< "\n# timeStepSize: " << timeStepSize << "\n# checkInterval: "
-			<< checkInterval << "\n# method : " << method << endl;
+			<< checkInterval << "\n# maxIterations: " << maxIterations
+			<< "\n# method : " << method << endl;
 
 	/// init start vector at t = 0.
 	/// b = [0, x1, x2, ..., xn-1, 0] (Dirichlet)
 	dvector b;
-	b.reserve(stepSize);
+	b.reserve(stepSize + 1);
 
-	for (int i = 0; i < stepSize; i++) {
-		double y = f(i);
+	double arg = 0.0;
+	for (int i = 0; i <= stepSize; i++) {
+		double y = f(arg);
 		b.push_back(y);
+		//cout << "f(" << x << ") = " << y << endl;
+		arg += 1.0 / stepSize + 1;
 	}
 
-	/// init system matrix A
-	CRS A = generateSystemMatrix(stepSize, timeStepSize);
+	cout << "# start vector:\n" << b << endl;
 
-	dvector result;
+	/// init system matrix A
+	CRS A = generateSystemMatrix(stepSize + 1, timeStepSize);
+
+	dvector x;
 
 	switch (method) {
 	case 0: {
 		JacobiMethod jm(A, b);
 		cout << "# starting calculation using Jacobi...\n";
-		result = jm.solveSystem(epsilon, maxIterations, timeStepSize,
-				checkInterval);
+		x = jm.solveSystem(epsilon, maxIterations, timeStepSize, checkInterval);
 		break;
 	}
 	case 1: {
 		GS gs(A, b);
 		cout << "# starting calculation using Gaus Seidel...\n";
-		result = gs.solveSystem(epsilon, maxIterations, timeStepSize,
-				checkInterval);
+		x = gs.solveSystem(epsilon, maxIterations, timeStepSize, checkInterval);
+		break;
+	}
+	case 2: {
+		CG cg(A, b);
+		cout << "# starting calculation using CG (Conjugated Gradients)...\n";
+		x = cg.solveSystem(epsilon, maxIterations, timeStepSize, checkInterval);
 		break;
 	}
 	default:
 		cerr << "No valid method specified!" << endl;
 		break;
 	}
-	cout << "# result:\n" << result << endl;
+	cout << "# result: \n" << "\n# " << x << endl;
 	return 0;
 }

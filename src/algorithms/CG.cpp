@@ -11,6 +11,7 @@
  * first created on 15.06.2009
  */
 #include <iostream>
+#include <cmath>
 #include "CG.h"
 #include "../datastructures/VectorFunc.cpp"
 using namespace std;
@@ -26,22 +27,34 @@ CG::~CG() {
 dvector CG::solveSystem(double epsilon, const unsigned int maxIterations,
 		double timeStepSize, unsigned int checkInterval) {
 
-	CRS & A = getA();
-	const dvector & b = getB();
+	CRS & A = getA(); /// system matrix A
+	const dvector & b = getB(); /// right side of linear system
 
-	dvector x(b.size()), r, d, Ad;
-	double rNew, rOld, alpha, beta, defect_new, defect_old;
+	dvector x(b.size()); /// iterative solution of x
+	dvector r; ///
+	dvector d;
+	dvector Ad;
+	double rNew, rOld, alpha, beta, defect_new, defect_old = -1;
 
-	unsigned int currentIteration = 0, count = 0;
+	unsigned int currentIteration = 0, count = 1;
 
-	d = r = b - A * x;
+	/// init d, r with start vector values
+	d = r = b;
+	/// init rOld with skalar product of r
 	rOld = r * r;
 
-	while (currentIteration <= maxIterations) {
+	/// while not reached convergence criterium or max iterations
+	do {
+		currentIteration++;
+
 		Ad = A * d;
+
 		alpha = rOld / (d * Ad);
+
 		x = x + d * alpha;
+
 		r = r - Ad * alpha;
+
 		rNew = r * r;
 
 		beta = rNew / rOld;
@@ -59,7 +72,7 @@ dvector CG::solveSystem(double epsilon, const unsigned int maxIterations,
 			/// check, if we met the convergence criteria
 			if (defect_new < epsilon) {
 				cout << "# defect < epsilon after " << currentIteration << endl;
-				//break;
+				break;
 			}
 
 			if (defect_old < 0)
@@ -69,6 +82,7 @@ dvector CG::solveSystem(double epsilon, const unsigned int maxIterations,
 			cout << c << '\n';
 			defect_old = defect_new;
 		}
-	}
+	} while (currentIteration < maxIterations);
+
 	return x;
 }

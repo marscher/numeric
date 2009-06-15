@@ -1,6 +1,8 @@
 ################################################
 # builds crs exercise
 # Author: M. Luecke, M. Scherer
+# $Revision: $
+# $Id: $
 ################################################
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
 
@@ -10,7 +12,8 @@ OBJS =		src/tests/testJacobi.o \
 	src/exceptions/DimensionException.o \
 	src/algorithms/JacobiMethod.o \
 	src/algorithms/GS.o \
-	src/algorithms/Solver.o
+	src/algorithms/Solver.o \
+	src/algorithms/CG.o
 
 LIBS =
 
@@ -22,7 +25,7 @@ $(TARGET):	$(OBJS)
 all:	$(TARGET) doc
 
 clean:
-	rm -f $(OBJS) $(TARGET) doc/
+	rm -rf $(OBJS) $(TARGET) doc/
 
 doc:
 	doxygen -s doc.Doxyfile

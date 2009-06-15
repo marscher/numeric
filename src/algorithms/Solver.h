@@ -3,18 +3,17 @@
  *
  * \ingroup algorithms
  *
- * $Version: $
+ * \version $Revision$
  *
  * $Id$
- * first created on 12:52:18 2009
  */
 
 #ifndef SOLVER_H_
 #define SOLVER_H_
 
-#include <vector>
+//#include <vector>
 #include "../datastructures/CRS.h"
-using std::vector;
+//using std::vector;
 
 class Solver {
 public:

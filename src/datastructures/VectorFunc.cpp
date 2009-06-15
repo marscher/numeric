@@ -9,8 +9,8 @@
  * $Id$
  * stolen from: http://www.cplusplus.com/forum/general/8493/
  */
-#ifndef _VECTORFUNC_H
-#define	_VECTORRUNC_H
+#ifndef _VECTORFUNC_CPP
+#define	_VECTORRUNC_CPP
 
 #include <cstdlib>
 #include <cmath>
@@ -18,7 +18,6 @@
 #include <iostream>
 
 /// no need for so long declarations...
-
 typedef std::vector<double> dvector;
 typedef std::vector<int> ivector;
 
@@ -54,6 +53,9 @@ std::vector<T> operator-(const std::vector<T>& x, const std::vector<T>& y) {
 	return temp;
 }
 
+/**
+ * skalar product
+ */
 template<class T>
 T operator*(const std::vector<T>& x, const std::vector<T>& y) {
 	size_t n = y.size();
@@ -69,6 +71,18 @@ std::vector<T>& operator*=(std::vector<T>& x, const std::vector<T>& y) {
 	size_t n = x.size();
 	for (size_t i = 0; i < n; i++) {
 		x[i] *= y[i];
+	}
+	return x;
+}
+
+/**
+ * vektor * skalar
+ */
+template<class T>
+std::vector<T>& operator*(std::vector<T>& x, T skalar) {
+	size_t n = x.size();
+	for (size_t i = 0; i < n; i++) {
+		x[i] *= skalar;
 	}
 	return x;
 }
@@ -92,9 +106,6 @@ std::vector<T>& operator/=(std::vector<T>& x, const std::vector<T>& y) {
 	return x;
 }
 
-/**
- * Euklidian norm
- */
 template<class T>
 T norm2(const std::vector<T>& x, long double p = 2) {
 	T sum = 0;
@@ -114,7 +125,8 @@ T norm(const std::vector<T>& x, long double p = 2.0) {
 }
 
 /**
- * writes a String representation of given vector x to given ostream os
+ * writes a string representation of given vector x to given ostream os.
+ * It allows calls like std::cout << vector1;
  */
 template<class T> std::ostream& operator <<(std::ostream& os,
 		const std::vector<T>& x) {
@@ -128,4 +140,4 @@ template<class T> std::ostream& operator <<(std::ostream& os,
 	return os;
 }
 
-#endif	/* _VECTORFUNC_H */
+#endif	/* _VECTORFUNC_CPP */

@@ -52,11 +52,10 @@ public:
 	CRS operator-(const CRS&);
 
 	/// Matrix Vector Operations
-	/** \brief multiplies this matrix with given vector
+	/**
+	 * brief multiplies this matrix with given vector
 	 */
 	vector<double> operator*(const vector<double>&);
-	void vektorMult(const vector<double>& arg, vector<double>& result);
-
 	vector<double> getTrace();
 	void getTrace(vector<double>&);
 
