@@ -42,9 +42,11 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 	int count = 1;
 	double defect_old = -1, defect_new;
 
-	const dvector & values = getA().getVal();
-	const ivector & rowPtr = getA().getRowPtr();
-	const ivector & col = getA().getCol();
+	CRS& A  = getA();
+
+	const dvector & values = A.getVal();
+	const ivector & rowPtr = A.getRowPtr();
+	const ivector & col = A.getCol();
 	const dvector & b = getB();
 	dvector x = dvector(b), y(b.size());
 	double t;
@@ -70,8 +72,7 @@ vector<double> JacobiMethod::solveSystem(double epsilon,
 		/// after checkInterval iterations:
 		if (currentIteration == count * checkInterval) {
 			count++;
-			defect_new = norm((getA() * y) - b);
-			cout << "# defect: " << defect_new << endl;
+			defect_new = calcDefect(x);
 
 			/// check, if we met the convergence criteria
 			if (defect_new < epsilon) {

@@ -21,8 +21,8 @@ using namespace std;
 
 double PI = 3.14159265;
 
-double f(double x) {
-	return (sin(x * 100 - PI / 2) + 1) * 100;
+double f(double x, unsigned int stepSize) {
+	return (sin(x * stepSize - PI / 2) + 1) * 100;
 }
 
 /**
@@ -151,9 +151,9 @@ int main(int argc, char **argv) {
 
 	double arg = 0.0;
 	for (int i = 0; i <= stepSize; i++) {
-		double y = f(arg);
+		double y = f(arg, stepSize);
 		b.push_back(y);
-		//cout << "f(" << x << ") = " << y << endl;
+		cout << "f(" << arg << ") = " << y << endl;
 		arg += 1.0 / stepSize + 1;
 	}
 

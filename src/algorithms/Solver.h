@@ -11,9 +11,7 @@
 #ifndef SOLVER_H_
 #define SOLVER_H_
 
-//#include <vector>
 #include "../datastructures/CRS.h"
-//using std::vector;
 
 class Solver {
 public:
@@ -36,6 +34,9 @@ private:
 	/// Setter
 	void setB(const vector<double>&);
 	void setA(const CRS&);
+
+protected:
+	double calcDefect(const vector<double>& x);
 };
 
 #endif /* SOLVER_H_ */

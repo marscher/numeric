@@ -2,7 +2,7 @@
 # builds crs exercise
 # Author: M. Luecke, M. Scherer
 # $Revision: $
-# $Id: $
+# $Id$
 ################################################
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0
 

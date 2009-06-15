@@ -9,8 +9,12 @@
  *
  * $Id$
  */
-
+#include <iostream>
 #include "Solver.h"
+#include "../datastructures/VectorFunc.cpp"
+
+using std::cout;
+
 Solver::Solver(const CRS& crs, const vector<double>& b) {
 	setA(crs);
 	setB(b);
@@ -34,4 +38,10 @@ const vector<double>& Solver::getB() const {
 
 CRS& Solver::getA() {
 	return A;
+}
+
+double Solver::calcDefect(const vector<double>& x) {
+	double d = norm((getA() * x) - getB());
+	cout << "# defect: " << d << '\n';
+	return d;
 }

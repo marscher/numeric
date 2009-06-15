@@ -60,7 +60,7 @@ vector<double> GS::solveSystem(double epsilon, unsigned int maxIterations,
 		/// after checkInterval iterations:
 		if (currentIteration == count * checkInterval) {
 			count++;
-			defect_new = norm((getA() * x) - b);
+			defect_new = calcDefect(x);
 			cout << "# defect: " << defect_new << endl;
 
 			/// check, if we met the convergence criteria
